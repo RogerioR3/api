@@ -14,7 +14,7 @@ Para clonar o repositório do projeto, siga os passos abaixo:
 3. Execute o comando:
 
 ```bash
-git clone https://github.com/POO-2024-1/api.git
+git clone https://github.com/RogerioR3/api.git
 ```
 
 ## 2. Importando o Projeto no IntelliJ IDEA
