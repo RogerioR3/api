@@ -1,3 +1,5 @@
+package br.gov.ufg.entity;
+
 public class Memento {
     private Pedido pedido;
 
