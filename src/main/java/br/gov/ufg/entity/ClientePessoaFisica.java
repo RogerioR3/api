@@ -1,3 +1,5 @@
+package br.gov.ufg.entity;
+
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
