@@ -1,3 +1,5 @@
+package br.gov.ufg.entity;
+
 public class ClientePessoaJuridica extends Cliente {
     private String cnpj;
     private String razaoSocial;
