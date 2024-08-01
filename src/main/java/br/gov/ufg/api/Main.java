@@ -1,56 +1,98 @@
-package br.gov.ufg.api;
+package br.gov.ufg;
 
-import br.gov.ufg.entity.Produto;
-import br.gov.ufg.utils.FileUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
-
-import java.io.*;
-import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
+import br.gov.ufg.controller.ClienteController;
+import br.gov.ufg.controller.ItemController;
+import br.gov.ufg.controller.PedidoController;
+import br.gov.ufg.controller.ProdutoController;
+import br.gov.ufg.dto.ClienteDTO;
+import br.gov.ufg.dto.ItemDTO;
+import br.gov.ufg.dto.PedidoDTO;
+import br.gov.ufg.dto.ProdutoDTO;
+import br.gov.ufg.memento.Caretaker;
+import br.gov.ufg.memento.Originator;
+import br.gov.ufg.service.ClienteService;
+import br.gov.ufg.service.ItemService;
+import br.gov.ufg.service.PedidoService;
+import br.gov.ufg.service.ProdutoService;
 
 public class Main {
+    public static void main(String[] args) {
+        // Inicializando os serviços
+        ClienteService clienteService = new ClienteService();
+        ItemService itemService = new ItemService();
+        PedidoService pedidoService = new PedidoService();
+        ProdutoService produtoService = new ProdutoService();
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+        // Inicializando os controladores com os serviços
+        ClienteController clienteController = new ClienteController(clienteService);
+        ItemController itemController = new ItemController(itemService);
+        PedidoController pedidoController = new PedidoController(pedidoService);
+        ProdutoController produtoController = new ProdutoController(produtoService);
 
-        // caminho relativo
-        String fileName = "database/produtos.txt";
+        // Exemplo de Cliente Pessoa Física
+        ClienteDTO clienteFisico = new ClienteDTO();
+        clienteFisico.setNome("João Silva");
+        clienteFisico.setEmail("joao@example.com");
+        clienteFisico.setEndereco("Rua A, 123");
+        clienteFisico.setTelefone("123456789");
+        clienteFisico.setUserName("joaosilva");
+        clienteFisico.setPassword("password123");
+        clienteFisico.setTipo("PessoaFisica");
+        clienteFisico.setCpf("123.456.789-00");
+        clienteFisico.setRg("MG-12.345.678");
+        clienteFisico.setDataNascimento(new java.util.Date());
+        clienteController.createCliente(clienteFisico);
 
-        // Tentar obter o caminho do arquivo como um recurso
-        java.net.URL resource = Main.class.getClassLoader().getResource(fileName);
-        if (resource != null) {
-            try {
+        // Exemplo de Cliente Pessoa Jurídica
+        ClienteDTO clienteJuridico = new ClienteDTO();
+        clienteJuridico.setNome("Empresa XYZ");
+        clienteJuridico.setEmail("contato@xyz.com");
+        clienteJuridico.setEndereco("Avenida B, 456");
+        clienteJuridico.setTelefone("987654321");
+        clienteJuridico.setUserName("empresaXYZ");
+        clienteJuridico.setPassword("securePass");
+        clienteJuridico.setTipo("PessoaJuridica");
+        clienteJuridico.setCnpj("12.345.678/0001-00");
+        clienteJuridico.setRazaoSocial("Empresa XYZ LTDA");
+        clienteJuridico.setInscricaoEstadual("123.456.789.012");
+        clienteController.createCliente(clienteJuridico);
 
-                // Converter URL para URI e obter o caminho absoluto
-                java.nio.file.Path caminhoArquivoAbsoluto = Paths.get(resource.toURI());
-                // Imprimir o caminho absoluto
-                System.out.println("Caminho absoluto do arquivo: " + caminhoArquivoAbsoluto);
+        // Exemplo de Produto
+        ProdutoDTO produtoDTO = new ProdutoDTO();
+        produtoDTO.setNome("Produto 1");
+        produtoDTO.setDescricao("Descrição do Produto 1");
+        produtoDTO.setPreco(100.0);
+        produtoDTO.setEstoque(50);
+        produtoController.createProduto(produtoDTO);
 
-                // Ler linhas do arquivo usando o caminho absoluto
-                List<String> linhas = Files.readAllLines(caminhoArquivoAbsoluto);
-                // Imprimir o conteúdo do arquivo
-                //linhas.forEach(System.out::println);
-            } catch (URISyntaxException | IOException e) {
-                System.out.println("Erro ao ler o arquivo: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Arquivo não encontrado!");
-        }
+        // Exemplo de Item
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setQuantidade(2);
+        itemDTO.setPrecoUnitario(100.0);
+        itemController.createItem(itemDTO);
 
+        // Exemplo de Pedido
+        PedidoDTO pedidoDTO = new PedidoDTO();
+        pedidoDTO.setStatus("Em processamento");
+        pedidoController.createPedido(pedidoDTO);
 
+        // Exemplo de uso do padrão Memento
+        Originator originator = new Originator();
+        Caretaker caretaker = new Caretaker();
 
-        try {
-            Path imagePath = Paths.get("C:\\projetos\\api\\src\\main\\resources\\imagens\\calca_jeans.png");
-            byte[] imagemBytes = Files.readAllBytes(imagePath);
-            //System.out.println("\nImage as byte : " + imagemBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Tratar o erro de leitura da imagem aqui
-        }
+        originator.setState("Estado #1");
+        caretaker.add(originator.saveStateToMemento());
+
+        originator.setState("Estado #2");
+        caretaker.add(originator.saveStateToMemento());
+
+        originator.setState("Estado #3");
+        System.out.println("Estado atual: " + originator.getState());
+
+        originator.getStateFromMemento(caretaker.get(0));
+        System.out.println("Primeiro estado salvo: " + originator.getState());
+
+        originator.getStateFromMemento(caretaker.get(1));
+        System.out.println("Segundo estado salvo: " + originator.getState());
     }
 }
