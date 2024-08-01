@@ -1,3 +1,5 @@
+package br.gov.ufg.entity;
+
 import java.math.BigDecimal;
 
 public class Item {
