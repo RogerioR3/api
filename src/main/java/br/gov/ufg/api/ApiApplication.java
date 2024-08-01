@@ -1,18 +1,20 @@
-package br.gov.ufg.api;
+package br.gov.ufg.configuration;
 
-import br.gov.ufg.controller.ProdutoController;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication
-@ComponentScan(basePackageClasses = ProdutoController.class)
-public class ApiApplication {
+@Configuration
+public class CorsConfiguration implements WebMvcConfigurer {
 
-	public static void main(String[] args) {
-
-		SpringApplication.run(ApiApplication.class, args);
-
-	}
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .exposedHeaders("Authorization", "Cache-Control", "Content-Type")
+                .allowCredentials(true)
+                .maxAge(3600)
+                .allowedOrigins("*");
+    }
 }
-
