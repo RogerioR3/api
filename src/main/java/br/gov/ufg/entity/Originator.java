@@ -1,3 +1,5 @@
+package br.gov.ufg.entity;
+
 public class Originator {
     private Pedido pedido;
     
