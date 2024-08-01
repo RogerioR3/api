@@ -1,3 +1,5 @@
+package br.gov.ufg.entity;
+
 import java.util.Scanner;
 import java.util.Objects;
 import java.util.regex.Pattern;
